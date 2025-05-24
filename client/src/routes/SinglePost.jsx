@@ -1,215 +1,86 @@
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { format } from "timeago.js";
 
 import Image from "../componenets/Image";
 import PostMenuActions from "../componenets/PostMenuActions";
 import Search from "../componenets/Search";
 import Comments from "../componenets/Comments";
 
+const fetchPost = async (slug) => {
+    const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/post/${slug}`
+    );
+
+    return response.data;
+};
+
 const SinglePost = () => {
+    const { slug } = useParams();
+
+    const { isPending, error, data } = useQuery({
+        queryKey: ["post", slug],
+        queryFn: () => fetchPost(slug),
+    });
+
+    if (isPending) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+    if (!data) return <div>No post found</div>;
+
     return (
         <div className='flex flex-col gap-8'>
             {/* details */}
             <div className='flex gap-8'>
                 <div className='lg:w-3/5 flex flex-col gap-8'>
                     <h1 className='text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold'>
-                        Mastering System Design: 30 Core Concepts Every
-                        Developer Should Know Harsh Gupta Harsh Gupta
+                        {data.title}
                     </h1>
                     <div className='flex items-center gap-2 text-gray-400 text-sm'>
                         <span>Written by</span>
-                        <Link className='text-blue-800'>John Doe</Link>
+                        <Link className='text-blue-800'>
+                            {data.user.userName}
+                        </Link>
                         <span>on</span>
-                        <Link className='text-blue-800'>Web Design</Link>
-                        <span>2 days ago</span>
+                        <Link className='text-blue-800'>{data.category}</Link>
+                        <span>{format(data.createAt)}</span>
                     </div>
-                    <p className='text-gray-500 font-medium'>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing
-                        elit. Odio natus, architecto illum distinctio tempore
-                        dolorum quam perferendis laboriosam soluta odit cumque
-                        ipsa eius minima ad eum deleniti blanditiis quis dolore!
-                    </p>
+                    <p className='text-gray-500 font-medium'>{data.desc}</p>
                 </div>
-                <div className='hidden lg:block w-2/5'>
-                    <Image src='postImg.jpeg' w={600} className='rounded-2xl' />
-                </div>
+                {data.image && (
+                    <div className='hidden lg:block w-2/5'>
+                        <Image
+                            src={data.image}
+                            w={600}
+                            className='rounded-2xl'
+                        />
+                    </div>
+                )}
             </div>
             {/* content */}
             <div className='flex flex-col md:flex-row gap-12'>
                 {/* text */}
-                <div className='lg:text-lg flex flex-col gap-6 text-justify'>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt voluptas error nihil, voluptatibus sed
-                        deleniti maxime ipsam eaque amet alias cum quas ducimus
-                        qui dolorem beatae vero labore provident explicabo
-                        architecto soluta? Dignissimos sit, quasi quia quas at
-                        numquam sed mollitia. Quae deserunt a reiciendis, ab
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eos eligendi explicabo esse dignissimos id nobis
-                        optio, possimus laudantium perferendis consequatur at
-                        nihil blanditiis deserunt adipisci asperiores mollitia
-                        rerum natus soluta? Beatae velit distinctio, quasi
-                        recusandae dolorem aliquid dolor porro animi veritatis,
-                        atque nisi! Inventore dolore consectetur ea aspernatur.
-                        Ut at incidunt a veritatis reprehenderit ratione maiores
-                        iste, voluptates saepe! Voluptas explicabo aspernatur,
-                        eaque aliquid, natus non mollitia quidem quisquam
-                        reiciendis tempore labore id optio tempora repellendus
-                        perferendis voluptates, ut temporibus fugiat earum nemo
-                        dolores? Commodi fuga quasi tenetur? Cumque optio nam
-                        illo ipsum accusantium tenetur illum rem, voluptatem,
-                        aperiam sequi, numquam dicta. Atque commodi veritatis
-                        nemo odit labore nisi omnis modi exercitationem. Ipsam,
-                        soluta minus error repellat veritatis eveniet cumque
-                        nisi autem nobis odio ipsum facere ipsa voluptatibus!
-                        Asperiores distinctio sapiente atque eaque. Magnam dolor
-                        rerum ea eveniet, labore autem reiciendis repellendus
-                        consectetur nobis deleniti, quos sed recusandae alias?
-                        Quaerat.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt voluptas error nihil, voluptatibus sed
-                        deleniti maxime ipsam eaque amet alias cum quas ducimus
-                        qui dolorem beatae vero labore provident explicabo
-                        architecto soluta? Dignissimos sit, quasi quia quas at
-                        numquam sed mollitia. Quae deserunt a reiciendis, ab
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eos eligendi explicabo esse dignissimos id nobis
-                        optio, possimus laudantium perferendis consequatur at
-                        nihil blanditiis deserunt adipisci asperiores mollitia
-                        rerum natus soluta? Beatae velit distinctio, quasi
-                        recusandae dolorem aliquid dolor porro animi veritatis,
-                        atque nisi! Inventore dolore consectetur ea aspernatur.
-                        Ut at incidunt a veritatis reprehenderit ratione maiores
-                        iste, voluptates saepe! Voluptas explicabo aspernatur,
-                        eaque aliquid, natus non mollitia quidem quisquam
-                        reiciendis tempore labore id optio tempora repellendus
-                        perferendis voluptates, ut temporibus fugiat earum nemo
-                        dolores? Commodi fuga quasi tenetur? Cumque optio nam
-                        illo ipsum accusantium tenetur illum rem, voluptatem,
-                        aperiam sequi, numquam dicta. Atque commodi veritatis
-                        nemo odit labore nisi omnis modi exercitationem. Ipsam,
-                        soluta minus error repellat veritatis eveniet cumque
-                        nisi autem nobis odio ipsum facere ipsa voluptatibus!
-                        Asperiores distinctio sapiente atque eaque. Magnam dolor
-                        rerum ea eveniet, labore autem reiciendis repellendus
-                        consectetur nobis deleniti, quos sed recusandae alias?
-                        Quaerat.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt voluptas error nihil, voluptatibus sed
-                        deleniti maxime ipsam eaque amet alias cum quas ducimus
-                        qui dolorem beatae vero labore provident explicabo
-                        architecto soluta? Dignissimos sit, quasi quia quas at
-                        numquam sed mollitia. Quae deserunt a reiciendis, ab
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eos eligendi explicabo esse dignissimos id nobis
-                        optio, possimus laudantium perferendis consequatur at
-                        nihil blanditiis deserunt adipisci asperiores mollitia
-                        rerum natus soluta? Beatae velit distinctio, quasi
-                        recusandae dolorem aliquid dolor porro animi veritatis,
-                        atque nisi! Inventore dolore consectetur ea aspernatur.
-                        Ut at incidunt a veritatis reprehenderit ratione maiores
-                        iste, voluptates saepe! Voluptas explicabo aspernatur,
-                        eaque aliquid, natus non mollitia quidem quisquam
-                        reiciendis tempore labore id optio tempora repellendus
-                        perferendis voluptates, ut temporibus fugiat earum nemo
-                        dolores? Commodi fuga quasi tenetur? Cumque optio nam
-                        illo ipsum accusantium tenetur illum rem, voluptatem,
-                        aperiam sequi, numquam dicta. Atque commodi veritatis
-                        nemo odit labore nisi omnis modi exercitationem. Ipsam,
-                        soluta minus error repellat veritatis eveniet cumque
-                        nisi autem nobis odio ipsum facere ipsa voluptatibus!
-                        Asperiores distinctio sapiente atque eaque. Magnam dolor
-                        rerum ea eveniet, labore autem reiciendis repellendus
-                        consectetur nobis deleniti, quos sed recusandae alias?
-                        Quaerat.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt voluptas error nihil, voluptatibus sed
-                        deleniti maxime ipsam eaque amet alias cum quas ducimus
-                        qui dolorem beatae vero labore provident explicabo
-                        architecto soluta? Dignissimos sit, quasi quia quas at
-                        numquam sed mollitia. Quae deserunt a reiciendis, ab
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eos eligendi explicabo esse dignissimos id nobis
-                        optio, possimus laudantium perferendis consequatur at
-                        nihil blanditiis deserunt adipisci asperiores mollitia
-                        rerum natus soluta? Beatae velit distinctio, quasi
-                        recusandae dolorem aliquid dolor porro animi veritatis,
-                        atque nisi! Inventore dolore consectetur ea aspernatur.
-                        Ut at incidunt a veritatis reprehenderit ratione maiores
-                        iste, voluptates saepe! Voluptas explicabo aspernatur,
-                        eaque aliquid, natus non mollitia quidem quisquam
-                        reiciendis tempore labore id optio tempora repellendus
-                        perferendis voluptates, ut temporibus fugiat earum nemo
-                        dolores? Commodi fuga quasi tenetur? Cumque optio nam
-                        illo ipsum accusantium tenetur illum rem, voluptatem,
-                        aperiam sequi, numquam dicta. Atque commodi veritatis
-                        nemo odit labore nisi omnis modi exercitationem. Ipsam,
-                        soluta minus error repellat veritatis eveniet cumque
-                        nisi autem nobis odio ipsum facere ipsa voluptatibus!
-                        Asperiores distinctio sapiente atque eaque. Magnam dolor
-                        rerum ea eveniet, labore autem reiciendis repellendus
-                        consectetur nobis deleniti, quos sed recusandae alias?
-                        Quaerat.
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Sunt voluptas error nihil, voluptatibus sed
-                        deleniti maxime ipsam eaque amet alias cum quas ducimus
-                        qui dolorem beatae vero labore provident explicabo
-                        architecto soluta? Dignissimos sit, quasi quia quas at
-                        numquam sed mollitia. Quae deserunt a reiciendis, ab
-                    </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eos eligendi explicabo esse dignissimos id nobis
-                        optio, possimus laudantium perferendis consequatur at
-                        nihil blanditiis deserunt adipisci asperiores mollitia
-                        rerum natus soluta? Beatae velit distinctio, quasi
-                        recusandae dolorem aliquid dolor porro animi veritatis,
-                        atque nisi! Inventore dolore consectetur ea aspernatur.
-                        Ut at incidunt a veritatis reprehenderit ratione maiores
-                        iste, voluptates saepe! Voluptas explicabo aspernatur,
-                        eaque aliquid, natus non mollitia quidem quisquam
-                        reiciendis tempore labore id optio tempora repellendus
-                        perferendis voluptates, ut temporibus fugiat earum nemo
-                        dolores? Commodi fuga quasi tenetur? Cumque optio nam
-                        illo ipsum accusantium tenetur illum rem, voluptatem,
-                        aperiam sequi, numquam dicta. Atque commodi veritatis
-                        nemo odit labore nisi omnis modi exercitationem. Ipsam,
-                        soluta minus error repellat veritatis eveniet cumque
-                        nisi autem nobis odio ipsum facere ipsa voluptatibus!
-                        Asperiores distinctio sapiente atque eaque. Magnam dolor
-                        rerum ea eveniet, labore autem reiciendis repellendus
-                        consectetur nobis deleniti, quos sed recusandae alias?
-                        Quaerat.
-                    </p>
+                <div className='flex-1 lg:text-lg flex flex-col gap-6 text-justify'>
+                    {data.content}
                 </div>
                 {/* menu */}
                 <div className='px-4 h-max sticky top-8'>
                     <h2 className=' mb-4 text-sm font-medium'>Author</h2>
                     <div className='flex flex-col gap-4'>
                         <div className='flex items-center gap-8'>
-                            <Image
-                                src='userImg.jpeg'
-                                className='w-12 h-12 rounded-full object-cover'
-                                w={48}
-                                h={48}
-                            />
-                            <Link className='text-blue-800'>John Doe</Link>
+                            {/* <img src={data.user.image} alt='' srcset='' /> */}
+                            {/* <h2>{data.user.image}</h2> */}
+                            {data.user.image && (
+                                <Image
+                                    src={data.user.image}
+                                    className='w-12 h-12 rounded-full object-cover'
+                                    w={48}
+                                    h={48}
+                                />
+                            )}
+                            <Link className='text-blue-800'>
+                                {data.user.userName}
+                            </Link>
                         </div>
                         <p className='text-sm text-gray-500'>
                             Lorem ipsum, dolor sit amet consectetur adipisicing
@@ -224,7 +95,7 @@ const SinglePost = () => {
                             </Link>
                         </div>
                     </div>
-                    <PostMenuActions />
+                    <PostMenuActions post={data} />
                     <h2 className='mt-8 mb-4 text-sm font-medium'>
                         Categories
                     </h2>
@@ -252,7 +123,7 @@ const SinglePost = () => {
                     <Search />
                 </div>
             </div>
-            <Comments />
+            <Comments postId={data._id} />
         </div>
     );
 };

@@ -11,7 +11,16 @@ const Image = ({ src, className, w, h, alt }) => {
             width={w}
             height={h}
             alt={alt}
-            transformation={[{ height: h, width: w }]}
+            transformation={[
+                {
+                    height: h,
+                    width: w,
+                    overlay: {
+                        type: "solidColor",
+                        color: "FF0000",
+                    },
+                },
+            ]}
         />
     );
 };
