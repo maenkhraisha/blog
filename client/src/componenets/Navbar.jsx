@@ -11,7 +11,7 @@ function Navbar() {
             <Link
                 to={"/"}
                 className='flex items-center gap-4 text-2xl font-bold'>
-                <Image src='/logo.png' h={64} w={64} alt='logo' />
+                <Image src='/logo.png' h={64} alt='logo' />
             </Link>
             {/*mobile menu*/}
             <div className='md:hidden'>

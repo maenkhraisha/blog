@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { format } from "timeago.js";
 
+import ReactQuill from "react-quill-new";
+
 import Image from "../componenets/Image";
 import PostMenuActions from "../componenets/PostMenuActions";
 import Search from "../componenets/Search";
@@ -58,10 +60,15 @@ const SinglePost = () => {
                 )}
             </div>
             {/* content */}
-            <div className='flex flex-col md:flex-row gap-12'>
+            <div className='grid grid-cols-4 md:flex-row gap-12'>
                 {/* text */}
-                <div className='flex-1 lg:text-lg flex flex-col gap-6 text-justify'>
-                    {data.content}
+                <div className='col-span-3  lg:text-lg flex flex-col gap-6 text-justify'>
+                    <ReactQuill
+                        value={data.content}
+                        readOnly={true}
+                        theme='bubble'
+                    />
+                    {/* {data.content} */}
                 </div>
                 {/* menu */}
                 <div className='px-4 h-max sticky top-8'>

@@ -1,6 +1,6 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import "react-quill-new/dist/quill.snow.css";
+
 import ReactQuill from "react-quill-new";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -35,7 +35,6 @@ const Write = () => {
     const mutation = useMutation({
         mutationFn: async (newPost) => {
             const token = await getToken();
-
             return axios.post(`${import.meta.env.VITE_API_URL}/post`, newPost, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -53,6 +52,10 @@ const Write = () => {
         return <div>Please sign in to write a post.</div>;
     }
 
+    const handleContentChange = (content, delta, source, editor) => {
+        setValue(editor.getHTML());
+    };
+
     const handleSubmite = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -63,7 +66,6 @@ const Write = () => {
             desc: formData.get("desc"),
             content: value,
         };
-        console.log(cover);
         mutation.mutate(newPost);
     };
 
@@ -130,7 +132,7 @@ const Write = () => {
                     </div>
                     <ReactQuill
                         value={value}
-                        onChange={setValue}
+                        onChange={handleContentChange}
                         theme='snow'
                         className='flex-1 rounded-xl bg-white shadow-md'
                         readOnly={0 < progress && progress < 100}
